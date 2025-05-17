@@ -1,9 +1,9 @@
-import styled from "styled-components"
-import { Icon } from "../icon/icon"
-import { getScreenWidth } from "../../utils/getScreenWidth"
+import styled from "styled-components";
+import { Icon } from "../icon/icon";
+import { getScreenWidth } from "../../utils/getScreenWidth";
 
 interface HeaderContainerProps {
-    className?: string
+    className?: string;
 }
 
 const HeaderContainer = ({ className }: HeaderContainerProps) => {
@@ -17,14 +17,19 @@ const HeaderContainer = ({ className }: HeaderContainerProps) => {
                     }`}
                     alt="logo"
                 />
-                <div className="btn-container">
+                <a
+                    className="btn-container"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://mamont-group.onrender.com"
+                >
                     <div>К тренировкам</div>
                     <Icon name="biceps.svg" inactive />
-                </div>
+                </a>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export const Header = styled(HeaderContainer)`
     position: fixed;
@@ -38,6 +43,8 @@ export const Header = styled(HeaderContainer)`
     z-index: 5;
 
     .btn-container {
+        text-decoration: none;
+        color: white;
         display: flex;
         gap: 10px;
         align-items: center;
@@ -83,4 +90,4 @@ export const Header = styled(HeaderContainer)`
     .logo-img {
         height: 100%;
     }
-`
+`;

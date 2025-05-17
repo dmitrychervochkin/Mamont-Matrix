@@ -102,7 +102,6 @@ const TableCardContainer = ({
                                     textDecoration: completed
                                         ? "line-through"
                                         : "none",
-                                    color: completed ? "#a2a2a2" : "#393939",
                                     padding: getScreenWidth(770)
                                         ? "8px 12px"
                                         : "3px 7px",
@@ -139,15 +138,16 @@ export const TableCard = styled(TableCardContainer)`
         width: 100%;
     }
     .task-item {
-        transition: opacity 0.2s;
+        transition: background-color 0.2s;
         word-break: break-word;
         white-space: normal;
         max-width: 100%;
         background-color: transparent;
+        color: #393939;
 
         &:hover {
             cursor: pointer;
-            opacity: 0.5;
+            background-color: #ffffff50;
         }
     }
 `;

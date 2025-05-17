@@ -47,6 +47,26 @@ const TableContainer = ({ className }: TableContainerProps) => {
         setNewTask("");
     };
 
+    const onDragOver = (e: React.DragEvent) => {
+        e.preventDefault(); // чтобы позволить drop
+    };
+
+    const onDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+
+        const taskId = e.dataTransfer.getData("text/plain");
+
+        if (!taskId) return;
+
+        const prevTasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+        const updatedTasks = prevTasks.filter(
+            (t: Task) => t.id.toString() !== taskId
+        );
+
+        localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+        setTasks(updatedTasks);
+    };
+
     return (
         <div
             className={className}
@@ -65,7 +85,14 @@ const TableContainer = ({ className }: TableContainerProps) => {
                         : "25px auto auto",
                 }}
             >
-                <div className="empty"></div>
+                <div className="empty" onDragOver={onDragOver} onDrop={onDrop}>
+                    <Icon
+                        id="delete"
+                        name="delete.svg"
+                        size={getScreenWidth(770) ? "medium" : "small"}
+                        inactive
+                    />
+                </div>
                 <div className="table-header">Срочно</div>
                 <div className="table-header">Не срочно</div>
 
@@ -252,6 +279,9 @@ export const Table = styled(TableContainer)`
         padding: 5px;
     }
     .empty {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 100%;
     }
     .add-task-list {
