@@ -1,0 +1,11 @@
+:root {
+    font-family: "Inter", "sans-serif";
+    color: white;
+    background-color: #141414;
+    height: 100%;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
