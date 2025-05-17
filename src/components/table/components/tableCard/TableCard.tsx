@@ -122,9 +122,6 @@ const TableCardContainer = ({
                             </div>
                         )
                 )}
-                {tasks?.length === 0 && (
-                    <div className="zero-tasks-length">Список задач пуст!</div>
-                )}
             </div>
         </div>
     );

@@ -185,6 +185,11 @@ const TableContainer = ({ className }: TableContainerProps) => {
                             {title}
                         </div>
                     ))}
+                    {waitingTasks?.length === 0 && (
+                        <div className="zero-tasks-length">
+                            Список задач пуст!
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
