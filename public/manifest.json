@@ -1,6 +1,7 @@
 {
     "name": "Mamont Group Matrix",
     "short_name": "MAMONT Matrix",
+    "gcm_sender_id": "103953800507",
     "icons": [
         {
             "src": "images/mamont-16x16.png",

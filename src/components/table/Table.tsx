@@ -62,9 +62,18 @@ const TableContainer = ({ className }: TableContainerProps) => {
         const updatedTasks = prevTasks.filter(
             (t: Task) => t.id.toString() !== taskId
         );
-
         localStorage.setItem("tasks", JSON.stringify(updatedTasks));
         setTasks(updatedTasks);
+
+        const waiting = JSON.parse(
+            localStorage.getItem("waiting_tasks") || "[]"
+        );
+        const updatedWaiting = waiting.filter(
+            (t: Task) => t.id.toString() !== taskId
+        );
+        localStorage.setItem("waiting_tasks", JSON.stringify(updatedWaiting));
+
+        setWaitingTasks?.(updatedWaiting);
     };
 
     return (

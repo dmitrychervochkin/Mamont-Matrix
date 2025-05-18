@@ -146,7 +146,7 @@ export const TableCard = styled(TableCardContainer)`
         color: #393939;
 
         &:hover {
-            cursor: pointer;
+            cursor: grabbing;
             background-color: #ffffff50;
         }
     }
