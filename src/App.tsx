@@ -8,56 +8,75 @@ interface AppContainerProps {
 
 const LIST_NAME = "A";
 
-function sendNotification(tasksCount: number) {
-    if (Notification.permission === "granted") {
-        new Notification("Внимание!", {
-            body: `В красном листе ${tasksCount} задач(а)!`,
-            icon: "/icon.png",
-            requireInteraction: true,
-        });
-        console.log("Пуш отправлен");
-    } else {
-        console.log("Нет разрешения на уведомления");
-    }
+interface Task {
+    list: string;
+    // add other properties if needed
 }
 
 const AppContainer = ({ className }: AppContainerProps) => {
     useEffect(() => {
-        console.log("Текущий статус уведомлений:", Notification.permission);
-
-        if (Notification.permission === "default") {
-            Notification.requestPermission().then((perm) => {
-                console.log("Разрешение получено:", perm);
-                if (perm === "granted") {
-                    checkTasksAndNotify();
-                }
-            });
-        } else if (Notification.permission === "granted") {
-            checkTasksAndNotify();
-        } else {
-            console.log("Уведомления запрещены");
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker
+                .register("/service-worker.js")
+                .then(() => {
+                    if (Notification.permission === "granted") {
+                        checkTasksAndNotify();
+                    } else if (Notification.permission === "default") {
+                        Notification.requestPermission().then((perm) => {
+                            if (perm === "granted") {
+                                checkTasksAndNotify();
+                            } else {
+                                console.log(
+                                    "Пользователь отказался от уведомлений"
+                                );
+                            }
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error(
+                        "❌ Ошибка регистрации Service Worker:",
+                        error
+                    );
+                });
         }
     }, []);
 
     function checkTasksAndNotify() {
         const stored = localStorage.getItem("tasks");
-        console.log("Данные из localStorage:", stored);
 
         if (!stored) return console.log("tasks не найден в localStorage");
 
         try {
-            const tasks = JSON.parse(stored);
+            const tasks: Task[] = JSON.parse(stored);
             if (!Array.isArray(tasks)) {
                 console.log("tasks не массив");
                 return;
             }
 
-            const redTasks = tasks.filter((t: any) => t.list === LIST_NAME);
-            console.log(`Задач в листе ${LIST_NAME}:`, redTasks.length);
+            const redTasks = tasks.filter((t: Task) => t.list === LIST_NAME);
 
-            if (redTasks.length > 0) {
-                sendNotification(redTasks.length);
+            if (redTasks.length === 0) return;
+
+            const lastPush = localStorage.getItem("lastPushTime");
+            const now = Date.now();
+
+            if (lastPush && now - parseInt(lastPush, 10) < 30 * 60 * 1000) {
+                console.log("⏱ Пуш уже был недавно, ждём ещё.");
+                return;
             }
+
+            localStorage.setItem("lastPushTime", now.toString());
+
+            navigator.serviceWorker.ready.then((registration) => {
+                registration.active?.postMessage({
+                    type: "CUSTOM_PUSH",
+                    payload: {
+                        title: "Внимание!",
+                        body: `В красном листе ${redTasks.length} задач(а)! Поторопись её выполнить!`,
+                    },
+                });
+            });
         } catch (e) {
             console.error("Ошибка парсинга tasks", e);
         }
